@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/nginx/:/etc/nginx/conf.d/
+
+  app:
+    build:
+      context: ./docker/php
+      dockerfile: php.8.1.Dockerfile
+    tty: true
+    environment:
+      CONTAINER_ROLE: app
+    volumes:
+      - ./src:/var/www/html
+
+  mysql:
+    image: mysql:8.0.29-debian
+    platform: linux/x86_64
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${APP_DATABASE}
+      MYSQL_USER: ${APP_USER}
+      MYSQL_PASSWORD: ${APP_USER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${APP_ROOT_PASSWORD}
+    volumes:
+      - ./volumes/mysql/logs:/var/log/mysql
+      - ./volumes/mysql/data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+    ports:
+      - "9000:80"

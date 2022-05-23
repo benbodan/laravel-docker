@@ -35,9 +35,8 @@ class ExportClientPayments extends Command
         $csv = fopen(storage_path('payments.csv'), 'w');
         fputcsv($csv, ['name', 'surname', 'amount', 'date']);
 
-
         $request = new Request([
-            'from_date' =>  Carbon::now()->subDays(30)->startOfDay(),
+            'from_date' => Carbon::now()->subDays(30)->startOfDay(),
             'to_date' => Carbon::now()->endOfDay()
         ]);
 
@@ -45,8 +44,8 @@ class ExportClientPayments extends Command
 
         $clientPayments = Client::withLastPayment()
             ->filter($filters)
-            ->orWhere('payments.created_at', null)
-            ->get();
+            ->get()
+            ->unique('user_id');
 
         foreach ($clientPayments as $clientPayment) {
             fputcsv($csv, [

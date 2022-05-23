@@ -3,7 +3,6 @@ namespace App\Http\Core\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Database\Query\JoinClause;
 
 abstract class QueryFilters
 {
@@ -34,7 +33,7 @@ abstract class QueryFilters
      * @param  Builder $builder
      * @return Builder
      */
-    public function apply(Builder|JoinClause $builder)
+    public function apply(Builder $builder)
     {
         $this->builder = $builder;
         foreach ($this->filters() as $name => $value) {

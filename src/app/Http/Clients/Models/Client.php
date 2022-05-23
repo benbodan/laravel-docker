@@ -19,6 +19,6 @@ class Client extends Model
 
     public function scopeWithLastPayment($query)
     {
-        $query->leftJoin('payments', 'payments.user_id', 'clients.id')->groupBy('user_id');
+        $query->leftJoin('payments', 'payments.user_id', 'clients.id')->orderBy('payments.created_at','desc');
     }
 }
